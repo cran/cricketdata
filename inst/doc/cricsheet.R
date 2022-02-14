@@ -17,7 +17,7 @@ library(ggtext)
 library(paletteer)
 library(patchwork)
 
-## ----getdata, eval=FALSE------------------------------------------------------
+## ----getdata, eval=FALSE, echo=FALSE------------------------------------------
 #  # Avoid downloading the data when the package is checked by CRAN.
 #  # This only needs to be run once to store the data locally
 #  wbbl_bbb <- fetch_cricsheet(competition = "wbbl", gender = "female")

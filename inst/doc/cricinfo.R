@@ -13,9 +13,28 @@ options(
 library(cricketdata)
 library(tidyverse)
 
+## ----getdata, eval=FALSE, echo=FALSE------------------------------------------
+#  # Avoid downloading the data when the package is checked by CRAN.
+#  # This only needs to be run once to store the data locally
+#  wt20 <- fetch_cricinfo("T20", "Women", "Bowling")
+#  menODI <- fetch_cricinfo("ODI", "Men", "Batting", type = "innings", country = "Australia")
+#  Indfielding <- fetch_cricinfo("Test", "Men", "Fielding", country = "India")
+#  meg_lanning_id <- find_player_id("Meg Lanning")$ID
+#  MegLanning <- fetch_player_data(meg_lanning_id, "ODI") %>%
+#    mutate(NotOut = (Dismissal == "not out"))
+#  
+#  saveRDS(wt20, "inst/extdata/wt20.rds")
+#  saveRDS(menODI, "inst/extdata/menODI.rds")
+#  saveRDS(Indfielding, "inst/extdata/Indfielding.rds")
+#  saveRDS(MegLanning, "inst/extdata/MegLanning.rds")
+
+## ----loaddata, include=FALSE--------------------------------------------------
+wt20 <- readRDS("../inst/extdata/wt20.rds")
+menODI <- readRDS("../inst/extdata/menODI.rds")
+Indfielding <- readRDS("../inst/extdata/Indfielding.rds")
+MegLanning <- readRDS("../inst/extdata/MegLanning.rds")
+
 ## ----woment20, message=FALSE--------------------------------------------------
-# Fetch all Women's T20 data
-wt20 <- fetch_cricinfo("T20", "Women", "Bowling")
 wt20 %>%
   mutate(Economy = parse_number(Economy)) %>%
   head() %>%
@@ -32,8 +51,6 @@ wt20 %>%
   coord_flip()
 
 ## ----menodi, message=FALSE----------------------------------------------------
-# Fetch all Australian Men's ODI data by innings
-menODI <- fetch_cricinfo("ODI", "Men", "Batting", type = "innings", country = "Australia")
 menODI %>%
   head() %>%
   knitr::kable()
@@ -46,7 +63,6 @@ menODI %>%
   ggtitle("Australia Men ODI: Runs per Innings")
 
 ## ----indiafielding------------------------------------------------------------
-Indfielding <- fetch_cricinfo("Test", "Men", "Fielding", country = "India")
 Indfielding %>%
   head() %>%
   knitr::kable()
@@ -59,9 +75,6 @@ Indfielding %>%
   ggtitle("Indian Men Test Fielding")
 
 ## ----meglanning---------------------------------------------------------------
-meg_lanning_id <- find_player_id("Lanning")$ID
-MegLanning <- fetch_player_data(meg_lanning_id, "ODI") %>%
-  mutate(NotOut = (Dismissal == "not out"))
 MegLanning %>%
   head() %>%
   knitr::kable()

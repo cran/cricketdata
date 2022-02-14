@@ -1,5 +1,5 @@
 Package: cricketdata
-Version: 0.1.0
+Version: 0.1.1
 Title: International Cricket Data
 Description: Data on international and other major cricket matches from 
   ESPNCricinfo <https://www.espncricinfo.com> and Cricsheet <https://cricsheet.org>.
@@ -27,7 +27,7 @@ VignetteBuilder: knitr
 URL: http://pkg.robjhyndman.com/cricketdata/,
         https://github.com/robjhyndman/cricketdata
 NeedsCompilation: no
-Packaged: 2022-02-03 22:17:06 UTC; hyndman
+Packaged: 2022-02-14 02:52:15 UTC; hyndman
 Author: Rob Hyndman [aut, cre],
   Timothy Hyndman [aut],
   Charles Gray [aut],
@@ -37,4 +37,4 @@ Author: Rob Hyndman [aut, cre],
   Alex Whan [ctb]
 Maintainer: Rob Hyndman <Rob.Hyndman@monash.edu>
 Repository: CRAN
-Date/Publication: 2022-02-07 09:30:02 UTC
+Date/Publication: 2022-02-14 03:20:07 UTC
