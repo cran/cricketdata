@@ -34,9 +34,8 @@ menODI <- readRDS("../inst/extdata/menODI.rds")
 Indfielding <- readRDS("../inst/extdata/Indfielding.rds")
 MegLanning <- readRDS("../inst/extdata/MegLanning.rds")
 
-## ----woment20, message=FALSE--------------------------------------------------
+## ----woment20, message=FALSE, echo = FALSE------------------------------------
 wt20 %>%
-  mutate(Economy = parse_number(Economy)) %>%
   head() %>%
   knitr::kable(digits=2)
 
@@ -50,7 +49,7 @@ wt20 %>%
   ylab("Balls per wicket") +
   coord_flip()
 
-## ----menodi, message=FALSE----------------------------------------------------
+## ----menodi, message=FALSE, echo=FALSE----------------------------------------
 menODI %>%
   head() %>%
   knitr::kable()
@@ -62,7 +61,7 @@ menODI %>%
   geom_smooth() +
   ggtitle("Australia Men ODI: Runs per Innings")
 
-## ----indiafielding------------------------------------------------------------
+## ----indiafielding, echo=FALSE------------------------------------------------
 Indfielding %>%
   head() %>%
   knitr::kable()
@@ -74,7 +73,7 @@ Indfielding %>%
   geom_point() +
   ggtitle("Indian Men Test Fielding")
 
-## ----meglanning---------------------------------------------------------------
+## ----meglanning, echo=FALSE---------------------------------------------------
 MegLanning %>%
   head() %>%
   knitr::kable()
@@ -91,7 +90,7 @@ names(MLave) <- paste("Average =", round(MLave, 2))
 # Plot ODI scores
 ggplot(MegLanning) +
   geom_hline(aes(yintercept = MLave), col="gray") +
-  geom_point(aes(x = Start_Date, y = Runs, col = NotOut)) +
+  geom_point(aes(x = Date, y = Runs, col = NotOut)) +
   ggtitle("Meg Lanning ODI Scores") +
   scale_y_continuous(sec.axis = sec_axis(~., breaks = MLave))
 

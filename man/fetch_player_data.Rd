@@ -40,10 +40,14 @@ LasithMalinga <- fetch_player_data(49758, "Test", "bowling")
 # Create a plot for Ellyse Perry's T20 scores
 library(dplyr)
 library(ggplot2)
-EllysePerry \%>\% filter(!is.na(Runs)) \%>\%
+EllysePerry |> filter(!is.na(Runs)) |>
 ggplot(aes(x=Start_Date, y=Runs, col = Dismissal, na.rm = TRUE)) + geom_point() +
   ggtitle("Ellyse Perry's T20 Scores")
 }
+}
+\seealso{
+\code{\link[=find_player_id]{find_player_id()}} to find a player ID by searching on their name,
+and \code{\link[=fetch_player_meta]{fetch_player_meta()}} to download meta data for players.
 }
 \author{
 Rob J Hyndman and Sayani Gupta
