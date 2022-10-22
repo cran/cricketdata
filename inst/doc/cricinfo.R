@@ -6,7 +6,7 @@ knitr::opts_chunk$set(
 )
 # Okabi-Ito colours
 options(
-  ggplot2.discrete.colour = c("#D55E00", "#0072B2","#009E73", "#CC79A7", "#E69F00", "#56B4E9", "#F0E442")
+  ggplot2.discrete.colour = c("#D55E00", "#0072B2", "#009E73", "#CC79A7", "#E69F00", "#56B4E9", "#F0E442")
 )
 
 ## ----setup--------------------------------------------------------------------
@@ -37,7 +37,7 @@ MegLanning <- readRDS("../inst/extdata/MegLanning.rds")
 ## ----woment20, message=FALSE, echo = FALSE------------------------------------
 wt20 %>%
   head() %>%
-  knitr::kable(digits=2)
+  knitr::kable(digits = 2)
 
 ## ----woment20graph, fig.width=10, fig.height=8--------------------------------
 wt20 %>%
@@ -89,7 +89,7 @@ MLave <- MegLanning %>%
 names(MLave) <- paste("Average =", round(MLave, 2))
 # Plot ODI scores
 ggplot(MegLanning) +
-  geom_hline(aes(yintercept = MLave), col="gray") +
+  geom_hline(aes(yintercept = MLave), col = "gray") +
   geom_point(aes(x = Date, y = Runs, col = NotOut)) +
   ggtitle("Meg Lanning ODI Scores") +
   scale_y_continuous(sec.axis = sec_axis(~., breaks = MLave))

@@ -1,5 +1,5 @@
 Package: cricketdata
-Version: 0.2.0
+Version: 0.2.1
 Title: International Cricket Data
 Description: Data on international and other major cricket matches from 
   ESPNCricinfo <https://www.espncricinfo.com> and Cricsheet <https://cricsheet.org>.
@@ -18,18 +18,18 @@ Authors@R: c(
 Depends: R (>= 3.5.0)
 Imports: dplyr, janitor, lubridate, magrittr, progress, readr, rvest,
         stringr, tibble, tidyr, xml2
-Suggests: gghighlight, ggplot2, ggtext, glue, knitr, paletteer,
-        patchwork, rmarkdown, showtext, tidyverse
+Suggests: gghighlight, ggplot2, ggtext, glue, here, knitr, paletteer,
+        patchwork, rmarkdown, R.rsp, showtext, tidyverse
 License: GPL-3
 Encoding: UTF-8
 ByteCompile: true
 URL: http://pkg.robjhyndman.com/cricketdata/,
         https://github.com/robjhyndman/cricketdata
 LazyData: true
-VignetteBuilder: knitr
+VignetteBuilder: knitr, R.rsp
 RoxygenNote: 7.2.1
 NeedsCompilation: no
-Packaged: 2022-08-05 05:49:58 UTC; hyndman
+Packaged: 2022-10-22 06:24:58 UTC; hyndman
 Author: Rob Hyndman [aut, cre],
   Timothy Hyndman [aut],
   Charles Gray [aut],
@@ -40,4 +40,4 @@ Author: Rob Hyndman [aut, cre],
   Alex Whan [ctb]
 Maintainer: Rob Hyndman <Rob.Hyndman@monash.edu>
 Repository: CRAN
-Date/Publication: 2022-08-05 09:50:10 UTC
+Date/Publication: 2022-10-22 07:05:12 UTC
