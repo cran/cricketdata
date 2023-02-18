@@ -31,9 +31,10 @@ wbbl_match_info <- readRDS("../inst/extdata/wbbl_match_info.rds")
 ## -----------------------------------------------------------------------------
 # Data from 2015/16 (WBBL01) excluded due to only having 10 matches worth of data
 # in the Cricsheet spreadsheet.
-# Data from 2021/22 (WBBL07) excluded as season is currently in progress.
+# Data from 2021/22 and later (WBBL07) excluded as incomplete at time of article
 wbbl_bbb_tidy <- wbbl_bbb %>%
-  filter(!season %in% c("2015/16", "2021/22"))
+  filter(!season %in% c("2015/16", "2021/22")) %>% 
+  filter(start_date < "2021-11-07")
 
 ## -----------------------------------------------------------------------------
 # Alyssa Healy compared to all players who have batted in 3+ innings in a season.
@@ -50,9 +51,10 @@ batting_per_season <- wbbl_bbb_tidy %>%
     strike_rate = round(runs_off_bat_total / balls_faced_total * 100, 1)
   ) %>%
   filter(innings_total > 2) %>%
-  mutate(is_healy = (striker == "AJ Healy"))
+  mutate(is_healy = (striker == "AJ Healy")) %>% 
+  ungroup()
 
-## ----out.width="100%"---------------------------------------------------------
+## ----warning=FALSE, out.width="100%"------------------------------------------
 # Import fonts from Google Fonts
 font_add_google("Roboto Condensed", "roboto_con")
 font_add_google("Staatliches", "staat")
@@ -64,7 +66,7 @@ batting_per_season %>%
     x = season, y = runs_per_innings_avg,
     group = striker, colour = is_healy
   )) +
-  geom_line(size = 2, colour = "#F80F61FF") +
+  geom_line(linewidth = 2, colour = "#F80F61FF") +
   gghighlight(is_healy,
     label_key = striker,
     label_params = aes(
@@ -288,12 +290,9 @@ wbbl07_match_info_tidy <- wbbl_match_info %>%
 # Subset ball-by-ball data for WBBL07 games
 wbbl07_bbb_tidy <- wbbl_bbb %>%
   filter(match_id %in% wbbl07_match_info_tidy$match_id) %>%
-  tidyr::separate(ball, c("over_num_extracted", "ball_num")) %>%
   mutate(
     match_id = factor(match_id),
-    over_num_numeric = as.numeric(over_num_extracted) + 1,
     runs_scored = runs_off_bat + extras,
-    ball_num = as.numeric(ball_num),
     wicket_type = case_when(
       wicket_type == "" ~ NA_character_,
       TRUE ~ wicket_type
@@ -378,7 +377,7 @@ team_strike_rate_renegades %>%
   ggplot(aes(x = balls_cumulative, y = rolling_strike_rate)) +
   facet_wrap(~match_details, ncol = 3) +
   geom_hline(yintercept = 100, linetype = "dashed", colour = "#CCCCCC") +
-  geom_line(aes(colour = outcome_batting_team), size = 1.5) +
+  geom_line(aes(colour = outcome_batting_team), linewidth = 1.5) +
   geom_point(
     aes(
       x = team_strike_rate_renegades$wicket_ball_num,

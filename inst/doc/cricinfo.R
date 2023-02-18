@@ -11,7 +11,8 @@ options(
 
 ## ----setup--------------------------------------------------------------------
 library(cricketdata)
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 
 ## ----getdata, eval=FALSE, echo=FALSE------------------------------------------
 #  # Avoid downloading the data when the package is checked by CRAN.
@@ -21,7 +22,8 @@ library(tidyverse)
 #  Indfielding <- fetch_cricinfo("Test", "Men", "Fielding", country = "India")
 #  meg_lanning_id <- find_player_id("Meg Lanning")$ID
 #  MegLanning <- fetch_player_data(meg_lanning_id, "ODI") %>%
-#    mutate(NotOut = (Dismissal == "not out"))
+#    mutate(NotOut = (Dismissal == "not out")) %>%
+#    mutate(NotOut = tidyr::replace_na(NotOut, FALSE))
 #  
 #  saveRDS(wt20, "inst/extdata/wt20.rds")
 #  saveRDS(menODI, "inst/extdata/menODI.rds")
@@ -83,7 +85,7 @@ MegLanning %>%
 MLave <- MegLanning %>%
   summarise(
     Innings = sum(!is.na(Runs)),
-    Average = sum(Runs, na.rm = TRUE) / (Innings - sum(NotOut))
+    Average = sum(Runs, na.rm = TRUE) / (Innings - sum(NotOut, na.rm=TRUE))
   ) %>%
   pull(Average)
 names(MLave) <- paste("Average =", round(MLave, 2))

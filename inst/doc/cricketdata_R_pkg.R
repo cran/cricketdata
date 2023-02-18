@@ -9,15 +9,18 @@ knitr::opts_chunk$set(
 
 ## -----------------------------------------------------------------------------
 library(cricketdata)
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 
 ## ----getdata, eval=FALSE, echo=FALSE------------------------------------------
 #  # Avoid downloading the data when the package is checked by CRAN.
 #  # This only needs to be run once to store the data locally
 #  ipl_bbb <- fetch_cricsheet("bbb", "male", "ipl")
 #  wt20 <- fetch_cricinfo("T20", "Women", "Bowling")
-#  menODI <- fetch_cricinfo("ODI", "Men", "Batting", type = "innings",
-#                           country = "United States of America")
+#  menODI <- fetch_cricinfo("ODI", "Men", "Batting",
+#    type = "innings",
+#    country = "United States of America"
+#  )
 #  meg_lanning_id <- find_player_id("Meg Lanning")$ID
 #  MegLanning <- fetch_player_data(meg_lanning_id, "ODI") %>%
 #    mutate(NotOut = (Dismissal == "not out"))
@@ -56,9 +59,10 @@ wt20 %>%
 
 # Table showing certain features of the data
 wt20 %>%
-  select(Player, Country, Matches, Runs, Wickets, Economy, StrikeRate)%>%
- head() %>%
-  knitr::kable(digits=2, align = "c",
+  select(Player, Country, Matches, Runs, Wickets, Economy, StrikeRate) %>%
+  head() %>%
+  knitr::kable(
+    digits = 2, align = "c",
     caption = "Women Player career profile for international T20"
   )
 
@@ -69,19 +73,22 @@ wt20 %>%
   ggplot(aes(y = StrikeRate, x = Average)) +
   geom_point(alpha = 0.3, col = "blue") +
   ggtitle("Women International T20 Bowlers") +
-  ylab("Balls bowled per wicket") + xlab("Runs conceded per wicket")
+  ylab("Balls bowled per wicket") +
+  xlab("Runs conceded per wicket")
 
 ## ---- echo=TRUE, eval=FALSE---------------------------------------------------
 #  # Fetch all USA Men's ODI data by innings
-#  menODI <- fetch_cricinfo("ODI", "Men", "Batting", type = "innings",
-#                           country = "United States of America")
+#  menODI <- fetch_cricinfo("ODI", "Men", "Batting",
+#    type = "innings",
+#    country = "United States of America"
+#  )
 
 ## ----tbl-USA100s--------------------------------------------------------------
 # Table of USA player who have scored a century
 menODI %>%
   filter(Runs >= 100) %>%
   select(Player, Runs, BallsFaced, Fours, Sixes, Opposition) %>%
-  knitr::kable(digits=2)
+  knitr::kable(digits = 2)
 
 ## ---- echo=FALSE--------------------------------------------------------------
 # menODI %>%
@@ -113,7 +120,7 @@ names(MLave) <- paste("Average =", round(MLave, 2))
 
 # Plot ODI scores
 ggplot(MegLanning) +
-  geom_hline(aes(yintercept = MLave), col="gray") +
+  geom_hline(aes(yintercept = MLave), col = "gray") +
   geom_point(aes(x = Date, y = Runs, col = NotOut)) +
   ggtitle("Meg Lanning ODI Scores") +
   scale_y_continuous(sec.axis = sec_axis(~., breaks = MLave))
@@ -131,42 +138,52 @@ ipl_bbb %>%
 ipl_bbb %>%
   filter(season == "2022") %>%
   group_by(striker) %>%
-  summarize(Runs = sum(runs_off_bat), BallsFaced = n()-sum(!is.na(wides)),
-  StrikeRate = Runs/BallsFaced, DotPercent = sum(runs_off_bat == 0)*100/BallsFaced,
-  BoundaryPercent = sum(runs_off_bat %in% c(4,6))*100/BallsFaced   ) %>%
+  summarize(
+    Runs = sum(runs_off_bat), BallsFaced = n() - sum(!is.na(wides)),
+    StrikeRate = Runs / BallsFaced, DotPercent = sum(runs_off_bat == 0) * 100 / BallsFaced,
+    BoundaryPercent = sum(runs_off_bat %in% c(4, 6)) * 100 / BallsFaced
+  ) %>%
   arrange(desc(Runs)) %>%
   rename(Batter = striker) %>%
   slice(1:20) %>%
   ggplot(aes(y = BoundaryPercent, x = DotPercent, size = BallsFaced)) +
-  geom_point(color = "red", alpha= 0.3) +
-  geom_text(aes(label= Batter), vjust=-0.5, hjust= 0.5, color="#013369",
-             position = position_dodge(0.9), size=3) +
-   ylab("Boundary Percent") + xlab("Dot Percent") + ggtitle("IPL 2022: Top 20 Batters")
+  geom_point(color = "red", alpha = 0.3) +
+  geom_text(aes(label = Batter),
+    vjust = -0.5, hjust = 0.5, color = "#013369",
+    position = position_dodge(0.9), size = 3
+  ) +
+  ylab("Boundary Percent") +
+  xlab("Dot Percent") +
+  ggtitle("IPL 2022: Top 20 Batters")
 
 ## ----tbl-IPL2022Batters-------------------------------------------------------
 # Top 10 prolific batters in IPL 2022 season.
 ipl_bbb %>%
   filter(season == "2022") %>%
   group_by(striker) %>%
-  summarize(Runs = sum(runs_off_bat), BallsFaced = n()-sum(!is.na(wides)),
-  StrikeRate = Runs/BallsFaced,
-  DotPercent = sum(runs_off_bat == 0)*100/BallsFaced,
-  BoundaryPercent = sum(runs_off_bat %in% c(4,6))*100/BallsFaced   ) %>%
+  summarize(
+    Runs = sum(runs_off_bat), BallsFaced = n() - sum(!is.na(wides)),
+    StrikeRate = Runs / BallsFaced,
+    DotPercent = sum(runs_off_bat == 0) * 100 / BallsFaced,
+    BoundaryPercent = sum(runs_off_bat %in% c(4, 6)) * 100 / BallsFaced
+  ) %>%
   arrange(desc(Runs)) %>%
   rename(Batter = striker) %>%
   slice(1:10) %>%
-  knitr::kable(digits=1,align = "c")
-
+  knitr::kable(digits = 1, align = "c")
 
 ## ----tbl-playermetadata-------------------------------------------------------
 player_meta %>%
   filter(!is.na(playing_role)) %>%
   select(-cricinfo_id, -unique_name) %>%
   head() %>%
-  knitr::kable(digits=1, align = "c", format = "pipe",
-    col.names = c("ID", "FullName", "Country", "DOB", "BirthPlace",
-                  "BattingStyle", "BowlingStyle", "PlayingRole"))
-
+  knitr::kable(
+    digits = 1, align = "c", format = "pipe",
+    col.names = c(
+      "ID", "FullName", "Country", "DOB", "BirthPlace",
+      "BattingStyle", "BowlingStyle", "PlayingRole"
+    )
+  )
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
 #  # Download meta data on Meg Lanning and Ellyse Perry
@@ -174,7 +191,11 @@ player_meta %>%
 
 ## ----tbl-ausplayermetadata----------------------------------------------------
 aus_women %>%
-  knitr::kable(digits=1, align = "c", format = "pipe",
-  col.names = c("ID", "FullName", "Country", "DOB", "BirthPlace", "BattingStyle",
-                "BowlingStyle", "PlayingRole"))
+  knitr::kable(
+    digits = 1, align = "c", format = "pipe",
+    col.names = c(
+      "ID", "FullName", "Country", "DOB", "BirthPlace", "BattingStyle",
+      "BowlingStyle", "PlayingRole"
+    )
+  )
 
