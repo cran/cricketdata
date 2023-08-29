@@ -1,3 +1,7 @@
+# cricketdata (0.2.3)
+  * Updated data
+  * Bug fixes
+
 # cricketdata (0.2.2)
   * Added hex sticker, thanks to @jacquietran
   * fetch_cricsheet() can now handle all competitions with csv files.

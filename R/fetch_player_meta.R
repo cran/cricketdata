@@ -13,7 +13,7 @@
 #' each player.
 #' @author Hassan Rafique and Rob J Hyndman
 #' @seealso It is usually simpler to just use the saved data set [player_meta]
-#' which contains the meta data for all players on ESPNCricinfo as at 20 January 2023.
+#' which contains the meta data for all players on ESPNCricinfo as at 28 August 2023.
 #' To find a player ID, use [find_player_id()].
 #' Use [fetch_player_data()] to download playing statistics for a player.
 #' @examples
@@ -24,10 +24,12 @@
 #' @export
 fetch_player_meta <- function(playerid) {
   output <- NULL
+  pb <- cli::cli_progress_bar(total = length(playerid))
   for (j in seq_along(playerid)) {
-    # print(j)
+    cli::cli_progress_update()
     output <- rbind(output, fetch_player_meta_individual(playerid[j]))
   }
+  cli::cli_progress_done()
   return(output)
 }
 
@@ -52,21 +54,20 @@ fetch_player_meta_individual <- function(playerid) {
     player.col <- html |>
       rvest::html_elements(".ds-grid p") |>
       rvest::html_text(trim = TRUE) |>
-      stringr::str_squish()
-    keep_cols <- which(player.col %in%
+      stringr::str_squish() |> 
+      matrix(nrow=2) 
+    colnames(player.col) <- player.col[1,]
+    player.col <- player.col[-1,,drop=FALSE] |> 
+      as.data.frame()
+    keep_cols <- which(colnames(player.col) %in%
       c("Full Name", "Born", "Age", "Batting Style", "Bowling Style", "Playing Role"))
-    player.col <- player.col[keep_cols]
-    player.info <- html |>
-      rvest::html_nodes(".ds-text-title-s") |>
-      rvest::html_text(trim = TRUE)
-    player.info <- player.info[keep_cols]
+    player.col <- player.col[,keep_cols,drop=FALSE]
     p.country.raw <- html |>
       rvest::html_nodes(".ds-text-comfortable-s") |>
       rvest::html_text(trim = TRUE)
 
     # data frame with one row
-    output <- data.frame(title = player.col, values = player.info) |>
-      tidyr::pivot_wider(names_from = title, values_from = values) |>
+    output <- player.col |>
       janitor::clean_names()
     output$cricinfo_id <- playerid
     output$country <- p.country.raw[1]
@@ -91,10 +92,12 @@ fetch_player_meta_individual <- function(playerid) {
       output$birthplace <- NA_character_
     } else {
       output$birthplace <- stringr::str_remove(output$birthplace, "^[, ]*")
-      # Fix missing countries
-      if (is.na(output$country) & output$birthplace == "South Korea") {
-        output$country <- "South Korea"
-      }
+    }
+    # Fix missing countries
+    if(is.na(output$country)) {
+      output$country <- "South Korea"
+    } else if(stringr::str_detect(output$country, "INTL CAREER")) {
+      output$country <- "South Korea"
     }
   }
   if (!("batting_style" %in% colnames(output))) {

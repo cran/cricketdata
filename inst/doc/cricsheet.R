@@ -33,7 +33,7 @@ wbbl_match_info <- readRDS("../inst/extdata/wbbl_match_info.rds")
 # in the Cricsheet spreadsheet.
 # Data from 2021/22 and later (WBBL07) excluded as incomplete at time of article
 wbbl_bbb_tidy <- wbbl_bbb %>%
-  filter(!season %in% c("2015/16", "2021/22")) %>% 
+  filter(!season %in% c("2015/16", "2021/22")) %>%
   filter(start_date < "2021-11-07")
 
 ## -----------------------------------------------------------------------------
@@ -51,7 +51,7 @@ batting_per_season <- wbbl_bbb_tidy %>%
     strike_rate = round(runs_off_bat_total / balls_faced_total * 100, 1)
   ) %>%
   filter(innings_total > 2) %>%
-  mutate(is_healy = (striker == "AJ Healy")) %>% 
+  mutate(is_healy = (striker == "AJ Healy")) %>%
   ungroup()
 
 ## ----warning=FALSE, out.width="100%"------------------------------------------
